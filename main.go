@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"syscall"
 )
 
 var versions = map[string]string {
@@ -16,7 +17,7 @@ func main() {
 	path, _ := versions[python]
 
 	if _, err := os.Stat(path); err != nil {
-		log.Fatalf("unknown python version '%s'", python)
+		log.Fatalf("unknown python version '%s'\n", python)
 	}
 
 	args := os.Args
@@ -35,6 +36,13 @@ func main() {
 	}
 
 	if !s.Success() {
-		log.Fatalf("python did not exit successfully: %v\n", s.Sys())
+		// try to exit with the right exit code
+		if ws, ok := s.Sys().(syscall.WaitStatus); ok {
+			os.Exit(ws.ExitStatus())
+		}
+
+		// not on a Posix system, so we don't know the exit code.  1's as
+		// good as any other
+		os.Exit(1)
 	}
 }
