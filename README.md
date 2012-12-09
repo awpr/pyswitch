@@ -19,6 +19,6 @@ not set.
 
 To use:
 
-- go install https://github.com/awpr/pyswitch
+- go get github.com/awpr/pyswitch
 - ln -s $GOROOT/bin/pyswitch $GOROOT/bin/python
 - ensure that $GOROOT/bin is ahead of /usr/bin in $PATH
